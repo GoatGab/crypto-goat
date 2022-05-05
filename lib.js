@@ -61,6 +61,14 @@ exports.PublicKey = class {
         }
     }
 
+    EncryptDF(df) {
+        let out = [];
+        for (let i = 0; i < df.length; i++) {
+            out.push(bigInt(df[i]).modPow(bigInt(this.a), bigInt(this.m)))
+        }
+        return out;
+    }
+
     Encrypt(message) {
         message = EncodeMessage(message, 2);
         let DF = [];
@@ -77,7 +85,7 @@ exports.PublicKey = class {
             for (let i = 0; i < message.length; i++) {
                 message[i] = bigInt(message[i]).modPow(bigInt(this.a), bigInt(this.m));
             }
-            return new exports.Message(message, DF);
+            return new exports.Message(message, this.EncryptDF(DF));
         } else {
             return new exports.Message(bigInt(message).modPow(bigInt(this.a), bigInt(this.m)), DF[0]);
         }
@@ -130,6 +138,14 @@ exports.PrivateKey = class {
         }
     }
 
+    DecryptDF(df) {
+        let out = [];
+        for (let i = 0; i < df.length; i++) {
+            out.push(bigInt(df[i]).modPow(bigInt(this.a), bigInt(this.m)))
+        }
+        return out;
+    }
+
     Decrypt(m) {
         // if (this.publicKey.q != this.q) {
         //     this.q = this.publicKey.q;
@@ -139,7 +155,7 @@ exports.PrivateKey = class {
             for (let i = 0; i < m.message.length; i++) {
                 m.message[i] = bigInt(m.message[i]).modPow(bigInt(this.a), bigInt(this.m));
             }
-            return new exports.Message(DecodeMessage(m.message, m.DF).join(''));
+            return new exports.Message(DecodeMessage(m.message, this.DecryptDF(m.DF)).join(''));
         } else {
             return new exports.Message(bigInt(m.message).modPow(bigInt(this.a), bigInt(this.m)));
         }

@@ -1,6 +1,6 @@
 {
     "name": "crypto-goat",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "description": "Cryptography Javascript Library",
     "main": "lib.js",
     "scripts": {
